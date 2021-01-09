@@ -1,5 +1,7 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { useField, toInput } from '../hooks'
+import { commentBlog } from '../reducers/blogReducer'
 import {
   useParams, Redirect
 } from 'react-router-dom'
@@ -8,6 +10,9 @@ const Blog = ({ blogs, updateBlog, deleteBlog }) => {
   const id = useParams().id
   const blog = blogs.find(b => b.id === id)
   const user = useSelector(state => state.user)
+  const dispatch = useDispatch()
+
+  const comment = useField('text')
 
   if (!blog) {
     return (
@@ -34,6 +39,12 @@ const Blog = ({ blogs, updateBlog, deleteBlog }) => {
     }
   }
 
+  const handleComment = (event) => {
+    event.preventDefault()
+    dispatch(commentBlog(blog.id, comment.value))
+    comment.reset()
+  }
+
   return (
     <div className="blog">
       <div>
@@ -42,6 +53,10 @@ const Blog = ({ blogs, updateBlog, deleteBlog }) => {
         <p className={'likes'}>{blog.likes}<button className={'likeButton'} onClick={handleLike}>like</button></p>
         <p className={'username'}>added by {blog.user.name}</p>
         <h3>comments</h3>
+        <form onSubmit={handleComment}>
+          <input {...toInput(comment)}/>
+          <button>add comment</button>
+        </form>
         <ul>
           {blog.comments.map(comment =>
             <li key={comment}>{comment}</li>
