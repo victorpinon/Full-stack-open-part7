@@ -5,6 +5,7 @@ import Toggable from './components/Toggable'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Users from './components/Users'
+import User from './components/User'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { useDispatch, useSelector } from 'react-redux'
@@ -19,6 +20,7 @@ import {
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
+  const users = useSelector(state => state.users)
   const user = useSelector(state => state.user)
 
   const dispatch = useDispatch()
@@ -97,6 +99,9 @@ const App = () => {
         <button onClick={handleLogout}>logout</button>
         <Router>
           <Switch>
+            <Route path="/users/:id">
+              <User users={users} />
+            </Route>
             <Route path='/users'>
               <Users />
             </Route>
