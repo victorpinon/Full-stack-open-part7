@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button'
 
 const BlogForm = ({ createBlog }) => {
 
@@ -30,11 +32,12 @@ const BlogForm = ({ createBlog }) => {
   }
 
   return (
-    <form className={'formDiv'} onSubmit={addBlog}>
+    <form className={'formDiv'} onSubmit={addBlog} noValidate autoComplete="off">
       <div>
-        title
-        <input
-          id="title"
+        <TextField
+          required
+          id="standard-basic"
+          label="Title"
           value={title}
           type="text"
           name="title"
@@ -42,9 +45,10 @@ const BlogForm = ({ createBlog }) => {
         />
       </div>
       <div>
-        author
-        <input
-          id="author"
+        <TextField
+          required
+          id="standard-basic"
+          label="Author"
           value={author}
           type="text"
           name="author"
@@ -52,16 +56,18 @@ const BlogForm = ({ createBlog }) => {
         />
       </div>
       <div>
-        url
-        <input
-          id="url"
+        <TextField
+          required
+          id="standard-basic"
+          label="URL"
           value={url}
           type="text"
           name="url"
           onChange={handleUrlChange}
         />
       </div>
-      <button id="create-button" type="submit">create</button>
+      <br />
+      <Button id="create-button" type="submit" variant="contained" color="primary">create</Button>
     </form>
   )
 }

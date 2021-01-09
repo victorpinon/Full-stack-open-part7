@@ -2,6 +2,14 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useField, toInput } from '../hooks'
 import { commentBlog } from '../reducers/blogReducer'
+import Typography from '@material-ui/core/Typography'
+import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
+import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt'
+import TextField from '@material-ui/core/TextField'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
 import {
   useParams, Redirect
 } from 'react-router-dom'
@@ -48,22 +56,43 @@ const Blog = ({ blogs, updateBlog, deleteBlog }) => {
   return (
     <div className="blog">
       <div>
-        <h1>{blog.title} {blog.author}</h1>
-        <p className={'url'}>{blog.url}</p>
-        <p className={'likes'}>{blog.likes}<button className={'likeButton'} onClick={handleLike}>like</button></p>
-        <p className={'username'}>added by {blog.user.name}</p>
-        <h3>comments</h3>
-        <form onSubmit={handleComment}>
-          <input {...toInput(comment)}/>
-          <button>add comment</button>
-        </form>
-        <ul>
-          {blog.comments.map(comment =>
-            <li key={comment}>{comment}</li>
-          )}
-        </ul>
+        <Typography variant="h3" color="inherit" gutterBottom>
+          {blog.title} {blog.author}
+        </Typography>
+        <Typography variant="body1" color="inherit" gutterBottom>
+          {blog.url}
+        </Typography>
+        <Typography variant="body1" color="inherit" gutterBottom>
+          <IconButton color="primary" onClick={handleLike}>
+            <ThumbUpAltIcon />
+          </IconButton>
+          {blog.likes}
+        </Typography>
+        <Typography variant="body1" color="inherit" gutterBottom>
+          added by {blog.user.name}
+        </Typography>
         <br />
-        {canDelete && <button onClick={removeBlog}>remove</button>}
+        <Typography variant="h5" color="inherit" gutterBottom>
+          Comments
+        </Typography>
+        <List>
+          {blog.comments.map(comment =>
+            <ListItem key={comment}>
+              <ListItemText>
+                {comment}
+              </ListItemText>
+            </ListItem>
+          )}
+        </List>
+        <br />
+        <form onSubmit={handleComment} noValidate autoComplete="off">
+          <TextField
+            id="standard-basic"
+            {...toInput(comment)}/>
+          <Button type="submit">Add comment</Button>
+        </form>
+        <br />
+        {canDelete && <Button color="secondary" onClick={removeBlog}>remove</Button>}
       </div>
     </div>
   )

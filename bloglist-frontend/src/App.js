@@ -13,6 +13,16 @@ import { setNotification } from './reducers/notificationReducer'
 import { getUsers } from './reducers/usersReducer'
 import { initializeBlogs, createBlog, likeBlog, removeBlog } from './reducers/blogReducer'
 import { setUser, removeUser } from './reducers/userReducer'
+import Container from '@material-ui/core/Container'
+import Typography from '@material-ui/core/Typography'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import IconButton from '@material-ui/core/IconButton'
+import Button from '@material-ui/core/Button'
+import ExitToAppIcon from '@material-ui/icons/ExitToApp'
+import Card from '@material-ui/core/Card'
+import CardContent from '@material-ui/core/CardContent'
+import PageviewIcon from '@material-ui/icons/Pageview'
 import {
   BrowserRouter as Router,
   Switch, Route, Link
@@ -81,64 +91,88 @@ const App = () => {
     dispatch(removeBlog(blogId))
   }
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
-  const navbar = {
-    display: 'inline',
-    padding: 5
-  }
-
   if (user === null) {
     return (
-      <div>
-        <h2>Log in to application</h2>
+      <Container style={{ textAlign: 'center', marginTop: '10%', maxWidth: '30%' }}>
+        <Typography variant="h2" gutterBottom>
+          Log in to application
+        </Typography>
         <Notification />
+        <br />
         <LoginForm handleSubmit={handleLogin} />
-      </div>
+      </Container>
     )
   }
   else {
     return (
-      <Router>
-        <div style={{ background: 'lightgrey' }}>
-          <Link style={navbar} to="/">blogs</Link>
-          <Link style={navbar} to="/users">users</Link>
-          <p style={navbar}>{user.name} logged in</p>
-          <button style={navbar} onClick={handleLogout}>logout</button>
-        </div>
-        <Notification />
-        <Switch>
-          <Route path="/users/:id">
-            <User users={users} />
-          </Route>
-          <Route path='/users'>
-            <Users />
-          </Route>
-          <Route path='/blogs/:id'>
-            <Blog  blogs={blogs} updateBlog={updateBlog} deleteBlog={deleteBlog}/>
-          </Route>
-          <Route path="/">
-            <h2>create new</h2>
-            <Toggable buttonLabel='new blog' ref={blogFormRef}>
-              <BlogForm createBlog={addBlog} />
-            </Toggable>
-            {blogs
-              .sort((a,b) => (a.likes > b.likes) ? -1 : ((b.likes > a.likes) ? 1 : 0))
-              .map(blog =>
-                <div style={blogStyle} key={blog.id}>
-                  <Link  to={`/blogs/${blog.id}`}>{blog.title}</Link><br/>
-                </div>
-              )
-            }
-          </Route>
-        </Switch>
-      </Router>
+      <Container>
+        <Router>
+          <AppBar position="static">
+            <Toolbar>
+              <Typography variant="h6" color="inherit" gutterBottom>
+                {user.name} logged in
+              </Typography>
+              <IconButton color="inherit" aria-label="menu">
+              </IconButton>
+              <Button color="inherit" component={Link} to="/">
+                blogs
+              </Button>
+              <Button color="inherit" component={Link} to="/users">
+                users
+              </Button>
+              <IconButton
+                style={{ marginLeft: 'auto' }}
+                edge="end"
+                onClick={handleLogout}
+                color="inherit"
+              >
+                <ExitToAppIcon />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+          <br />
+          <br />
+          <Notification />
+          <Switch>
+            <Route path="/users/:id">
+              <User users={users} />
+            </Route>
+            <Route path='/users'>
+              <Users />
+            </Route>
+            <Route path='/blogs/:id'>
+              <Blog  blogs={blogs} updateBlog={updateBlog} deleteBlog={deleteBlog}/>
+            </Route>
+            <Route path="/">
+              <Typography variant="h2" gutterBottom>
+                Create new blog
+              </Typography>
+              <Toggable buttonLabel='new blog' ref={blogFormRef}>
+                <BlogForm createBlog={addBlog} />
+              </Toggable>
+              <br />
+              {blogs
+                .sort((a,b) => (a.likes > b.likes) ? -1 : ((b.likes > a.likes) ? 1 : 0))
+                .map(blog =>
+                  <div key={blog.id}>
+                    <Card>
+                      <CardContent style={{ display: 'flex', justifyContent: 'space-between' }} >
+                        <Typography variant="h6" gutterBottom>
+                          {blog.title}
+                        </Typography>
+                        <IconButton component={Link} to={`/blogs/${blog.id}`}>
+                          <PageviewIcon  />
+                        </IconButton>
+                      </CardContent>
+                    </Card>
+                    <br />
+                  </div>
+                )
+              }
+            </Route>
+          </Switch>
+        </Router>
+      </Container>
     )
   }
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { removeNotification } from '../reducers/notificationReducer'
+import Alert from '@material-ui/lab/Alert'
 
 const Notification = () => {
   const notification = useSelector(state => state.notification)
@@ -17,26 +18,11 @@ const Notification = () => {
     }
   }, [notification, dispatch])
 
-  let messageStyle = {
-    background: 'lightgrey',
-    fontSize: 20,
-    borderStyle: 'solid',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-  }
-
   if (notification) {
-    if (notification.type === 'success') {
-      messageStyle.color = 'green'
-    }
-    else if (notification.type === 'error') {
-      messageStyle.color = 'red'
-    }
     return (
-      <div className={notification.type} style={messageStyle}>
+      <Alert severity={notification.type}>
         {notification.message}
-      </div>
+      </Alert>
     )
   } else {
     return (null)
