@@ -6,25 +6,21 @@ import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
+import { initializeBlogs, createBlog } from './reducers/blogReducer'
 
 const App = () => {
+  const blogs = useSelector(state => state.blogs)
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(initializeBlogs())
+  },[dispatch])
 
   const blogFormRef = useRef()
 
-  const [blogs, setBlogs] = useState([])
-
   const [user, setUser] = useState(null)
-
-  useEffect(() => {
-    const getBlogs = async () => {
-      const blogs = await blogService.getAll()
-      setBlogs( blogs )
-    }
-    getBlogs()
-  }, [])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
@@ -60,27 +56,26 @@ const App = () => {
 
   const addBlog = async (newBlog) => {
     blogFormRef.current.toggleVisibility()
-    const returnedBlog = await blogService.create(newBlog)
-    setBlogs(blogs.concat(returnedBlog))
-    showNotificationMessage(`A new blog ${returnedBlog.title} by ${returnedBlog.author} added`, 'success')
+    dispatch(createBlog(newBlog))
+    showNotificationMessage(`A new blog ${newBlog.title} by ${newBlog.author} added`, 'success')
   }
 
   const updateBlog = async (blogId, blogToUpdate) => {
-    const updatedBlog = await blogService.update(blogId, blogToUpdate)
-    const newBlogs = blogs.map(b => b.id !== updatedBlog.id ? b : {
-      ...b,
-      title: updatedBlog.title,
-      author: updatedBlog.author,
-      likes: updatedBlog.likes,
-      url: updatedBlog.url
-    })
-    setBlogs(newBlogs)
+    // const updatedBlog = await blogService.update(blogId, blogToUpdate)
+    // const newBlogs = blogs.map(b => b.id !== updatedBlog.id ? b : {
+    //   ...b,
+    //   title: updatedBlog.title,
+    //   author: updatedBlog.author,
+    //   likes: updatedBlog.likes,
+    //   url: updatedBlog.url
+    // })
+    // setBlogs(newBlogs)
   }
 
   const deleteBlog = async (blogId) => {
-    await blogService.remove(blogId)
-    const newBlogs = blogs.filter(b => b.id !== blogId)
-    setBlogs(newBlogs)
+    // await blogService.remove(blogId)
+    // const newBlogs = blogs.filter(b => b.id !== blogId)
+    // setBlogs(newBlogs)
   }
 
   if (user === null) {

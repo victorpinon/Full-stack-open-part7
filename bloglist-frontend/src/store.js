@@ -2,9 +2,13 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import notificationReducer from './reducers/notificationReducer'
+import blogReducer from './reducers/blogReducer'
+import blogService from './services/blogs'
+
 
 const reducer = combineReducers({
-  notification: notificationReducer
+  notification: notificationReducer,
+  blogs: blogReducer
 })
 
 const store = createStore(
@@ -12,6 +16,12 @@ const store = createStore(
   composeWithDevTools(
     applyMiddleware(thunk)
   )
+)
+
+blogService.getAll().then(blogs =>
+  blogs.forEach(blog => {
+    store.dispatch({ type: 'NEW_BLOG', data: blog })
+  })
 )
 
 export default store
