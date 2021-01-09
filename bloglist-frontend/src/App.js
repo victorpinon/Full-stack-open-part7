@@ -8,7 +8,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
-import { initializeBlogs, createBlog } from './reducers/blogReducer'
+import { initializeBlogs, createBlog, likeBlog, removeBlog } from './reducers/blogReducer'
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
@@ -60,22 +60,12 @@ const App = () => {
     showNotificationMessage(`A new blog ${newBlog.title} by ${newBlog.author} added`, 'success')
   }
 
-  const updateBlog = async (blogId, blogToUpdate) => {
-    // const updatedBlog = await blogService.update(blogId, blogToUpdate)
-    // const newBlogs = blogs.map(b => b.id !== updatedBlog.id ? b : {
-    //   ...b,
-    //   title: updatedBlog.title,
-    //   author: updatedBlog.author,
-    //   likes: updatedBlog.likes,
-    //   url: updatedBlog.url
-    // })
-    // setBlogs(newBlogs)
+  const updateBlog = async (id, blogToUpdate) => {
+    dispatch(likeBlog(id, blogToUpdate))
   }
 
   const deleteBlog = async (blogId) => {
-    // await blogService.remove(blogId)
-    // const newBlogs = blogs.filter(b => b.id !== blogId)
-    // setBlogs(newBlogs)
+    dispatch(removeBlog(blogId))
   }
 
   if (user === null) {

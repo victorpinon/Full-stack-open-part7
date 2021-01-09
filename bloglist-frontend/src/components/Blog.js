@@ -19,13 +19,13 @@ const Blog = ({ blog, updateBlog, deleteBlog, canDelete }) => {
   const getDetails = () => (
     <div>
       <p className={'url'}>{blog.url}</p>
-      <p className={'likes'}>{blog.likes}<button className={'likeButton'} onClick={likeBlog}>like</button></p>
+      <p className={'likes'}>{blog.likes}<button className={'likeButton'} onClick={handleLike}>like</button></p>
       <p className={'username'}>{blog.user.name}</p>
       {canDelete && <button onClick={removeBlog}>remove</button>}
     </div>
   )
 
-  const likeBlog = async () => {
+  const handleLike = async () => {
     const blogToLike = {
       user: blog.user.id,
       likes: blog.likes + 1,
