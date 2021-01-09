@@ -89,6 +89,11 @@ const App = () => {
     marginBottom: 5
   }
 
+  const navbar = {
+    display: 'inline',
+    padding: 5
+  }
+
   if (user === null) {
     return (
       <div>
@@ -100,39 +105,40 @@ const App = () => {
   }
   else {
     return (
-      <div>
-        <h2>blogs</h2>
+      <Router>
+        <div style={{ background: 'lightgrey' }}>
+          <Link style={navbar} to="/">blogs</Link>
+          <Link style={navbar} to="/users">users</Link>
+          <p style={navbar}>{user.name} logged in</p>
+          <button style={navbar} onClick={handleLogout}>logout</button>
+        </div>
         <Notification />
-        <p>{user.name} logged in</p>
-        <button onClick={handleLogout}>logout</button>
-        <Router>
-          <Switch>
-            <Route path="/users/:id">
-              <User users={users} />
-            </Route>
-            <Route path='/users'>
-              <Users />
-            </Route>
-            <Route path='/blogs/:id'>
-              <Blog  blogs={blogs} updateBlog={updateBlog} deleteBlog={deleteBlog}/>
-            </Route>
-            <Route path="/">
-              <h2>create new</h2>
-              <Toggable buttonLabel='new blog' ref={blogFormRef}>
-                <BlogForm createBlog={addBlog} />
-              </Toggable>
-              {blogs
-                .sort((a,b) => (a.likes > b.likes) ? -1 : ((b.likes > a.likes) ? 1 : 0))
-                .map(blog =>
-                  <div style={blogStyle} key={blog.id}>
-                    <Link  to={`/blogs/${blog.id}`}>{blog.title}</Link><br/>
-                  </div>
-                )
-              }
-            </Route>
-          </Switch>
-        </Router>
-      </div>
+        <Switch>
+          <Route path="/users/:id">
+            <User users={users} />
+          </Route>
+          <Route path='/users'>
+            <Users />
+          </Route>
+          <Route path='/blogs/:id'>
+            <Blog  blogs={blogs} updateBlog={updateBlog} deleteBlog={deleteBlog}/>
+          </Route>
+          <Route path="/">
+            <h2>create new</h2>
+            <Toggable buttonLabel='new blog' ref={blogFormRef}>
+              <BlogForm createBlog={addBlog} />
+            </Toggable>
+            {blogs
+              .sort((a,b) => (a.likes > b.likes) ? -1 : ((b.likes > a.likes) ? 1 : 0))
+              .map(blog =>
+                <div style={blogStyle} key={blog.id}>
+                  <Link  to={`/blogs/${blog.id}`}>{blog.title}</Link><br/>
+                </div>
+              )
+            }
+          </Route>
+        </Switch>
+      </Router>
     )
   }
 
