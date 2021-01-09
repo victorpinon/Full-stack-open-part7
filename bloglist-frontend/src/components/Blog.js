@@ -1,29 +1,15 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
+import { useSelector } from 'react-redux'
+import {
+  useParams
+} from 'react-router-dom'
 
-const Blog = ({ blog, updateBlog, deleteBlog, canDelete }) => {
-  const [details, setDetails] = useState(false)
+const Blog = ({ blogs, updateBlog, deleteBlog }) => {
+  const id = useParams().id
+  const blog = blogs.find(b => b.id === id)
+  const user = useSelector(state => state.user)
 
-  const toggleDetails = () => {
-    setDetails(!details)
-  }
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
-  const getDetails = () => (
-    <div>
-      <p className={'url'}>{blog.url}</p>
-      <p className={'likes'}>{blog.likes}<button className={'likeButton'} onClick={handleLike}>like</button></p>
-      <p className={'username'}>{blog.user.name}</p>
-      {canDelete && <button onClick={removeBlog}>remove</button>}
-    </div>
-  )
+  const canDelete = blog.user.username === user.username
 
   const handleLike = async () => {
     const blogToLike = {
@@ -43,22 +29,16 @@ const Blog = ({ blog, updateBlog, deleteBlog, canDelete }) => {
   }
 
   return (
-    <div style={blogStyle} className="blog">
+    <div className="blog">
       <div>
-        <p className={'title'}>{blog.title}</p>
-        <p className={'author'}>{blog.author}</p>
-        <button className={'detailsButton'} onClick={toggleDetails}>{details ? 'hide' : 'view'}</button>
+        <h1>{blog.title} {blog.author}</h1>
+        <p className={'url'}>{blog.url}</p>
+        <p className={'likes'}>{blog.likes}<button className={'likeButton'} onClick={handleLike}>like</button></p>
+        <p className={'username'}>added by {blog.user.name}</p>
+        {canDelete && <button onClick={removeBlog}>remove</button>}
       </div>
-      {details && getDetails()}
     </div>
   )
-}
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  updateBlog: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
-  canDelete: PropTypes.bool.isRequired
 }
 
 export default Blog

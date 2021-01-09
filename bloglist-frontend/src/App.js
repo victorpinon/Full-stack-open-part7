@@ -15,7 +15,7 @@ import { initializeBlogs, createBlog, likeBlog, removeBlog } from './reducers/bl
 import { setUser, removeUser } from './reducers/userReducer'
 import {
   BrowserRouter as Router,
-  Switch, Route
+  Switch, Route, Link
 } from 'react-router-dom'
 
 const App = () => {
@@ -81,6 +81,14 @@ const App = () => {
     dispatch(removeBlog(blogId))
   }
 
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
+  }
+
   if (user === null) {
     return (
       <div>
@@ -105,6 +113,9 @@ const App = () => {
             <Route path='/users'>
               <Users />
             </Route>
+            <Route path='/blogs/:id'>
+              <Blog  blogs={blogs} updateBlog={updateBlog} deleteBlog={deleteBlog}/>
+            </Route>
             <Route path="/">
               <h2>create new</h2>
               <Toggable buttonLabel='new blog' ref={blogFormRef}>
@@ -113,7 +124,9 @@ const App = () => {
               {blogs
                 .sort((a,b) => (a.likes > b.likes) ? -1 : ((b.likes > a.likes) ? 1 : 0))
                 .map(blog =>
-                  <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} canDelete={blog.user.username === user.username}/>
+                  <div style={blogStyle} key={blog.id}>
+                    <Link  to={`/blogs/${blog.id}`}>{blog.title}</Link><br/>
+                  </div>
                 )
               }
             </Route>
