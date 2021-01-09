@@ -1,7 +1,22 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { useEffect, useRef } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { removeNotification } from '../reducers/notificationReducer'
 
-const Notification = ({ message, messageType }) => {
+const Notification = () => {
+  const notification = useSelector(state => state.notification)
+  const dispatch = useDispatch()
+
+  const timeout = useRef(null)
+
+  useEffect(() => {
+    if (notification) {
+      window.clearTimeout(timeout.current)
+      timeout.current = window.setTimeout(() => {
+        dispatch(removeNotification())
+      }, notification.time * 1000)
+    }
+  }, [notification, dispatch])
+
   let messageStyle = {
     background: 'lightgrey',
     fontSize: 20,
@@ -11,27 +26,21 @@ const Notification = ({ message, messageType }) => {
     marginBottom: 10,
   }
 
-  if (messageType === 'success') {
-    messageStyle.color = 'green'
+  if (notification) {
+    if (notification.type === 'success') {
+      messageStyle.color = 'green'
+    }
+    else if (notification.type === 'error') {
+      messageStyle.color = 'red'
+    }
+    return (
+      <div className={notification.type} style={messageStyle}>
+        {notification.message}
+      </div>
+    )
+  } else {
+    return (null)
   }
-  else if (messageType === 'error') {
-    messageStyle.color = 'red'
-  }
-
-  if (message === null) {
-    return null
-  }
-
-  return (
-    <div className={messageType} style={messageStyle}>
-      {message}
-    </div>
-  )
-}
-
-Notification.propTypes = {
-  message: PropTypes.string,
-  messageType: PropTypes.string
 }
 
 export default Notification
