@@ -4,12 +4,18 @@ import LoginForm from './components/LoginForm'
 import Toggable from './components/Toggable'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import Users from './components/Users'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
+import { getUsers } from './reducers/usersReducer'
 import { initializeBlogs, createBlog, likeBlog, removeBlog } from './reducers/blogReducer'
 import { setUser, removeUser } from './reducers/userReducer'
+import {
+  BrowserRouter as Router,
+  Switch, Route
+} from 'react-router-dom'
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
@@ -19,6 +25,10 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeBlogs())
+  },[dispatch])
+
+  useEffect(() => {
+    dispatch(getUsers())
   },[dispatch])
 
   const blogFormRef = useRef()
@@ -85,16 +95,25 @@ const App = () => {
         <Notification />
         <p>{user.name} logged in</p>
         <button onClick={handleLogout}>logout</button>
-        <h2>create new</h2>
-        <Toggable buttonLabel='new blog' ref={blogFormRef}>
-          <BlogForm createBlog={addBlog} />
-        </Toggable>
-        {blogs
-          .sort((a,b) => (a.likes > b.likes) ? -1 : ((b.likes > a.likes) ? 1 : 0))
-          .map(blog =>
-            <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} canDelete={blog.user.username === user.username}/>
-          )
-        }
+        <Router>
+          <Switch>
+            <Route path='/users'>
+              <Users />
+            </Route>
+            <Route path="/">
+              <h2>create new</h2>
+              <Toggable buttonLabel='new blog' ref={blogFormRef}>
+                <BlogForm createBlog={addBlog} />
+              </Toggable>
+              {blogs
+                .sort((a,b) => (a.likes > b.likes) ? -1 : ((b.likes > a.likes) ? 1 : 0))
+                .map(blog =>
+                  <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} canDelete={blog.user.username === user.username}/>
+                )
+              }
+            </Route>
+          </Switch>
+        </Router>
       </div>
     )
   }
